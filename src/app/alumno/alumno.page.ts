@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
+import { AlertController, NavController } from '@ionic/angular';
+import { UsuarioService } from '../services/usuario.service';
 
 @Component({
   selector: 'app-alumno',
@@ -11,28 +11,29 @@ import { map } from 'rxjs/operators';
 
 export class AlumnoPage implements OnInit {
   
-  users: any = [];
+  listaUsuarios: any;
 
   constructor(
-    private http : HttpClient
-  ) { }
+    private usuarioService: UsuarioService, 
+    private http : HttpClient,
+    public navCtrl:NavController,
+    public alertController: AlertController) {
+    this.listarUsuario();
+  }
+
+  listarUsuario() {
+    this.usuarioService.obtenerListadoUsuarios()
+    .then(data => {
+      console.log(data['data'])
+      this.listaUsuarios = data.data;
+    }, 
+    (error) => { 
+      console.error(error)}
+    );
+  }
 
   ngOnInit() {
     console.log("hola");
-    this.getUsers().subscribe(res=>{
-      console.log('Res', res)
-      this.users = res;
-    });
-  }
-
-  getUsers(){
-    return this.http
-    .get("assets/files/customer.json")
-    // .pipe(
-    //   map(res:any) =>[
-    //     return res.data;
-    //   ]
-    // )
   }
 
 }

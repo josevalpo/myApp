@@ -1,11 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  FormGroup,
-  FormControl,
-  Validators,
-  FormBuilder
-} from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { AlertController, NavController } from '@ionic/angular';
+import { UsuarioService } from 'src/app/services/usuario.service';
 
 @Component({
   selector: 'app-registro',
@@ -14,11 +10,11 @@ import { AlertController, NavController } from '@ionic/angular';
 })
 export class RegistroPage implements OnInit {
 
-  token = 'xxx ';
-
   formularioRegistro: FormGroup;
   
-  constructor(public fb: FormBuilder,
+  constructor(
+    private usuarioService: UsuarioService, 
+    public fb: FormBuilder,
     public alertController: AlertController,
     public navCtrl: NavController) {
     this.formularioRegistro = this.fb.group({
@@ -33,9 +29,10 @@ export class RegistroPage implements OnInit {
   ngOnInit() {
   }
 
-  async guardar(){
+  async verificarUsuario(){
     var f = this.formularioRegistro.value;
 
+    //VALIDACION DE FORMULARIO (CAMPOS COMPLETOS)
     if(this.formularioRegistro.invalid){
       const alert = await this.alertController.create({
         header: 'Datos incompletos',
@@ -47,6 +44,7 @@ export class RegistroPage implements OnInit {
       return;
     }
 
+    //VALIDACIÓN DE CONTRASEÑA
     if(f.contrasena != f.confirmacionContrasena){
       const alert = await this.alertController.create({
         header: 'Error en contraseña',
@@ -57,16 +55,33 @@ export class RegistroPage implements OnInit {
     await alert.present();
     return;
     }
+  }
 
+  agregarUsuario(){
+
+    var f = this.formularioRegistro.value;
+    
+    //ASIGNACION DE CAMPOS A VARIABLE ARRAY 
+    
     var usuario = {
       nombre: f.nombre,
-      usuario: f.usuario,
+      user: f.usuario,
       correo: f.correo,
       contrasena: f.contrasena
     }
 
-    localStorage.setItem('usuario',JSON.stringify(usuario));
-    localStorage.setItem('ingresado','true');
+    //LLAMADO A POST
+    this.usuarioService.crearUsuario(usuario)
+      .then(respuesta => {
+        console.log(respuesta);
+          alert(`Se creó correctamente el usuario ${respuesta.user}`);
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+
+    //REGRESO A PAGINA DE LOGIN
     this.navCtrl.navigateRoot('login');
 
   }
