@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormBuilder} from '@angular/forms';
 import { AlertController, NavController } from '@ionic/angular';
+import { UsuarioService } from '../services/usuario.service';
 
 @Component({
   selector: 'app-login',
@@ -9,6 +10,8 @@ import { AlertController, NavController } from '@ionic/angular';
 })
 export class LoginPage implements OnInit {
   formularioLogin: FormGroup;
+  usuarioService: any;
+  listaUsuarios: any;
 
   constructor(public fb: FormBuilder,
     public alertController: AlertController,
@@ -28,11 +31,12 @@ export class LoginPage implements OnInit {
     var f = this.formularioLogin.value;
 
     //SE DEBE LLENAR DESDE EL JSON
-    // var usuario = JSON.parse(localStorage.getItem('usuario'));
     var usuario = JSON.parse(localStorage.getItem('usuario'));
+    // var usuario = this.usuarioService.obtenerListadoUsuarios();
+    
 
     //TIENE QUE EJECUTARSE UN CICLO
-    if(usuario.usuario == f.usuario && usuario.contrasena == f.contrasena){
+    if(usuario.user == f.usuario && usuario.contrasena == f.contrasena){
       console.log('Ingresado');
       localStorage.setItem('ingresado','true');
       this.navCtrl.navigateRoot('inicio');

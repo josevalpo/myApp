@@ -6,7 +6,8 @@ import { HttpClient } from '@angular/common/http'; //contiene las acciones de pr
   providedIn: 'root'
 })
 export class UsuarioService {
-  urlBase = "assets/files/usuario.json";
+  // urlBase = "assets/files/usuario.json";
+  urlBase = "https://mocki.io/v1/12b907e5-c9cb-4377-82e8-821e1f2a861e";
 
   constructor(private httpClient: HttpClient) { }
 
@@ -28,8 +29,9 @@ export class UsuarioService {
         this.httpClient.post(this.urlBase, usuario)
         .subscribe(res => {
             resolve(res)
-        }, (err) => {
-            reject(err);
+        }, 
+        (err) => {
+          reject(err);
         });
     }); 
   };
